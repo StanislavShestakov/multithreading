@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-
+  //Cash Coherency
         MyThread myThread = new MyThread();
         myThread.start();
 
@@ -19,7 +19,7 @@ public class Main {
 
 
 class MyThread extends Thread{
-    private boolean running = true;
+    private volatile boolean running = true;
 
     public void run(){
         while (running){
