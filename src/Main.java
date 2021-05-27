@@ -3,30 +3,29 @@ public class Main {
     public static void main(String[] args) {
 
 
-        //sequential processing
-        Runner1 runner1 = new Runner1();
-        Runner2 runner2 = new Runner2();
+        //IT IS NOT PARALLEL EXECUTION !!!  SINGLE CPU CORE
+        Thread t1 = new Thread(new Runner1());
+        Thread t2 = new Thread(new Runner2());
 
-        runner1.execute();
-        runner2.execute();
-
-
-
+        t1.start();
+        t2.start();
     }
 }
 
-class Runner1{
+class Runner1 implements Runnable{
 
-    public void execute() {
+    @Override
+    public void run() {
         for (int i = 0; i < 10; i++) {
             System.out.println("Runner1:" + i);
         }
     }
 }
 
-class Runner2{
+class Runner2 implements Runnable{
 
-    public void execute() {
+    @Override
+    public void run() {
         for (int i = 0; i < 10; i++) {
             System.out.println("Runner2:" + i);
         }
