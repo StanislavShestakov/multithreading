@@ -1,39 +1,39 @@
-import java.util.Scanner;
-
 public class Main {
 
-    public static void main(String[] args) throws InterruptedException {
-  //Cash Coherency
-        MyThread myThread = new MyThread();
-        myThread.start();
+    public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine();
 
-        myThread.shotDown();
+        //sequential processing
+        Runner1 runner1 = new Runner1();
+        Runner2 runner2 = new Runner2();
+
+        runner1.execute();
+        runner2.execute();
+
 
 
     }
 }
 
+class Runner1{
 
-
-class MyThread extends Thread{
-    private volatile boolean running = true;
-
-    public void run(){
-        while (running){
-            System.out.println("Hello!");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    public void execute() {
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Runner1:" + i);
         }
-
-    }
-
-    public  void shotDown(){
-        this.running = false;
     }
 }
+
+class Runner2{
+
+    public void execute() {
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Runner2:" + i);
+        }
+    }
+}
+
+
+
+
+
