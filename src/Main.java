@@ -2,17 +2,16 @@ public class Main {
 
     public static void main(String[] args) {
 
+        Thread t1 = new Runner1();
+        Thread t2 = new Runner2();
 
-        //IT IS NOT PARALLEL EXECUTION !!!  SINGLE CPU CORE
-        Thread t1 = new Thread(new Runner1());
-        Thread t2 = new Thread(new Runner2());
 
         t1.start();
         t2.start();
     }
 }
 
-class Runner1 implements Runnable{
+class Runner1 extends Thread{
 
     @Override
     public void run() {
@@ -22,7 +21,7 @@ class Runner1 implements Runnable{
     }
 }
 
-class Runner2 implements Runnable{
+class Runner2 extends Thread{
 
     @Override
     public void run() {
