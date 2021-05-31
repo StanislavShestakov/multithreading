@@ -1,11 +1,15 @@
 public class Main {
 
-    public  static int counter;
+    public  static int counter1 = 0;
+    public  static int counter2 = 0;
 
 
-    //in 1 time - 1  access
-    public static synchronized void increment(){
-        counter++;
+    //
+    public static synchronized void increment1(){
+        counter1++;
+    }
+    public static synchronized void increment2(){
+        counter2++;
     }
 
     public static  void process(){
@@ -15,7 +19,7 @@ public class Main {
             @Override
             public void run() {
                 for (int i = 0; i < 100; i++) {
-                    increment();
+                    increment1();
                 }
             }
         });
@@ -25,7 +29,7 @@ public class Main {
             @Override
             public void run() {
                 for (int i = 0; i < 100; i++) {
-                    increment();
+                    increment2();
                 }
             }
         });
@@ -40,8 +44,9 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println("The counter is: " + counter);
-        counter = 0;
+        System.out.println("The counter is: " + counter1);
+        System.out.println("The counter is: " + counter2);
+
     }
 
     public static void main(String[] args) {
