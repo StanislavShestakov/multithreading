@@ -5,11 +5,17 @@ public class Main {
 
 
     //
-    public static synchronized void increment1(){
-        counter1++;
+    public static  void increment1(){
+        //class level locking
+        //rule of thumb: we synchronize blocks that are 100% necessary
+        synchronized (Main.class) {
+            counter1++;
+        }
     }
     public static synchronized void increment2(){
-        counter2++;
+        synchronized (Main.class) {
+            counter2++;
+        }
     }
 
     public static  void process(){
@@ -50,9 +56,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 20; i++) {
+
             process();
-        }
 
     }
 
