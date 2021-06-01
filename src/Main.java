@@ -4,16 +4,17 @@ public class Main {
     public  static int counter2 = 0;
 
 
-    //
-    public static  void increment1(){
-        //class level locking
-        //rule of thumb: we synchronize blocks that are 100% necessary
-        synchronized (Main.class) {
+    private static final Object lock1 = new Object();
+    private static final Object lock2 = new Object();
+
+    public static synchronized void increment1(){
+        //at the same time != parallel - CPU time slicing
+        synchronized (lock1) {
             counter1++;
         }
     }
     public static synchronized void increment2(){
-        synchronized (Main.class) {
+        synchronized (lock2) {
             counter2++;
         }
     }
