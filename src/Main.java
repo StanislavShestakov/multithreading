@@ -1,70 +1,53 @@
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadInfo;
-import java.lang.management.ThreadMXBean;
 
 public class Main {
 
-    private static final ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
 
     public static void main(String[] args) {
-        for (int i = 0; i < 3; i++) {
-            buildAndLaunchThread(i);
-        }
-
-        Thread t = new Thread(){
-
+        Process process = new Process();
+        Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true){
-                    printThreadStatus();
-                    try {
-                        sleep(3000);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                try {
+                    process.produce();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-
             }
-
-        };
-        t.setName("detector");
-        t.start();
-
-    }
-
-    protected static void printThreadStatus() {
-        ThreadInfo[] infos = mbean.dumpAllThreads(true, true);
-
-        for (ThreadInfo threadInfo : infos) {
-            System.out.println(threadInfo.getThreadName() + " state = " + threadInfo.getThreadState());
-        }
-
-    }
-
-    private static void buildAndLaunchThread(int i) {
-        Thread t1 = new Thread(){
-
+        });
+        Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true){
-                    try {
-                        sleep(3000);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                try {
+                    process.consume();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-
             }
-
-        };
-        t1.setName("t" + i);
+        });
         t1.start();
-
+        t2.start();
     }
 
+}
 
+class Process{
+    public void  produce() throws  InterruptedException{
+        synchronized (this){
+            System.out.println("Running the produce method...");
+            wait();
+            System.out.println("Again in the produce method...");
+        }
+
+    }
+    public void  consume() throws  InterruptedException{
+
+        Thread.sleep(1000);
+        synchronized (this){
+            System.out.println("Consumer method is executed...");
+            notify();
+            Thread.sleep(5000);
+        }
+    }
 }
 
 
