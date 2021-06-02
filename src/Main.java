@@ -1,64 +1,66 @@
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+
 public class Main {
 
-    public  static int counter1 = 0;
-    public  static int counter2 = 0;
-
-
-    private static final Object lock1 = new Object();
-    private static final Object lock2 = new Object();
-
-    public static synchronized void increment1(){
-        //at the same time != parallel - CPU time slicing
-        synchronized (lock1) {
-            counter1++;
-        }
-    }
-    public static synchronized void increment2(){
-        synchronized (lock2) {
-            counter2++;
-        }
-    }
-
-    public static  void process(){
-
-        Thread t1 = new Thread(new Runnable(){
-
-            @Override
-            public void run() {
-                for (int i = 0; i < 100; i++) {
-                    increment1();
-                }
-            }
-        });
-
-        Thread t2 = new Thread(new Runnable(){
-
-            @Override
-            public void run() {
-                for (int i = 0; i < 100; i++) {
-                    increment2();
-                }
-            }
-        });
-
-        t1.start();
-        t2.start();
-
-        try {
-            t1.join();
-            t2.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("The counter is: " + counter1);
-        System.out.println("The counter is: " + counter2);
-
-    }
+    private static final ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
 
     public static void main(String[] args) {
+        for (int i = 0; i < 3; i++) {
+            buildAndLaunchThread(i);
+        }
 
-            process();
+        Thread t = new Thread(){
+
+            @Override
+            public void run() {
+                while(true){
+                    printThreadStatus();
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+        };
+        t.setName("detector");
+        t.start();
+
+    }
+
+    protected static void printThreadStatus() {
+        ThreadInfo[] infos = mbean.dumpAllThreads(true, true);
+
+        for (ThreadInfo threadInfo : infos) {
+            System.out.println(threadInfo.getThreadName() + " state = " + threadInfo.getThreadState());
+        }
+
+    }
+
+    private static void buildAndLaunchThread(int i) {
+        Thread t1 = new Thread(){
+
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+        };
+        t1.setName("t" + i);
+        t1.start();
 
     }
 
