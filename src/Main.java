@@ -9,10 +9,14 @@ public class Main {
     public static void increment(){
 
         lock.lock();
-        for (int i = 0; i < 10000; i++) {
-            counter++;
+        try {
+            for (int i = 0; i < 10000; i++) {
+                counter++;
+            }
+        }finally {
+            lock.unlock();
         }
-        lock.unlock();
+
 
     }
 
