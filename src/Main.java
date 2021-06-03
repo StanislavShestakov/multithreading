@@ -1,14 +1,16 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
 
     public static void main(String[] args) {
-        Process process = new Process();
+        Processor process = new Processor();
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    process.produce();
+                    process.producer();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -18,7 +20,7 @@ public class Main {
             @Override
             public void run() {
                 try {
-                    process.consume();
+                    process.consumer();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -30,24 +32,53 @@ public class Main {
 
 }
 
-class Process{
-    public void  produce() throws  InterruptedException{
-        synchronized (this){
-            System.out.println("Running the produce method...");
-            wait();
-            System.out.println("Again in the produce method...");
-        }
+class Processor {
 
-    }
-    public void  consume() throws  InterruptedException{
+    private List<Integer> list = new ArrayList<>();
+    private static final int UPPER_LIMIT = 5;
+    private static final int LOWER_LIMIT = 0;
+    private final Object lock = new Object();
+    private int value = 0;
 
-        Thread.sleep(1000);
-        synchronized (this){
-            System.out.println("Consumer method is executed...");
-            notify();
-            Thread.sleep(5000);
+    public void producer() throws InterruptedException {
+        synchronized (lock) {
+            while (true) {
+                if (list.size() == UPPER_LIMIT) {
+                    System.out.println("Waiting for removing items...");
+                    lock.wait();
+                } else {
+                    System.out.println("Adding " + value);
+                    list.add(value);
+                    value++;
+                    //we can call the notify- because the other thread will be notified
+                    //only when it is in waiting state
+                    lock.notify();
+                }
+                Thread.sleep(500);
+            }
+
+
         }
     }
+
+    public void consumer() throws InterruptedException {
+        synchronized (lock) {
+            while (true) {
+                if (list.size() == LOWER_LIMIT) {
+                    System.out.println("Waiting for adding items...");
+                    value = 0;
+                    lock.wait();
+                } else {
+                    System.out.println("Removing " + list.remove(list.size()-1));
+                    lock.notify();
+                    //do further operations !!!
+                }
+                Thread.sleep(500);
+            }
+
+        }
+    }
+
 }
 
 
