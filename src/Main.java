@@ -7,9 +7,12 @@ public class Main {
     private static Lock lock = new ReentrantLock();
 
     public static void increment(){
+
+        lock.lock();
         for (int i = 0; i < 10000; i++) {
             counter++;
         }
+        lock.unlock();
 
     }
 
