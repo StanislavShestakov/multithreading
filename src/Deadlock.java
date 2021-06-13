@@ -28,15 +28,15 @@ public class Deadlock {
         lock2.unlock();
     }
     public void worker2(){
-        lock2.lock();
-        System.out.println("Worker1 accquires the lock2...");
+        lock1.lock();
+        System.out.println("Worker1 acquires the lock1...");
         try {
             Thread.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        lock1.lock();
-        System.out.println("Worker1 accquires the lock1...");
+        lock2.lock();
+        System.out.println("Worker1 acquires the lock2...");
         lock1.unlock();
         lock2.unlock();
     }
